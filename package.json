@@ -1,13 +1,13 @@
 {
   "name": "monastery360",
   "version": "1.0.0",
-  "description": "cd frontend\r npm install\r npm run dev   # http://localhost:3000",
+  "description": "Monorepo for Monastery360 (Next.js frontend + FastAPI backend)",
   "main": "index.js",
   "scripts": {
-  "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
-  "dev:frontend": "cd frontend && npm run dev",
-  "dev:backend": "cd backend && source .venv/bin/activate && python -m uvicorn main:app --reload --port 8000"
-},
+    "dev": "concurrently \"npm run dev:frontend\" \"npm run dev:backend\"",
+    "dev:frontend": "cd frontend && npm run dev",
+    "dev:backend": "cd backend && .venv\\Scripts\\python.exe -m uvicorn main:app --reload --port 8000"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
