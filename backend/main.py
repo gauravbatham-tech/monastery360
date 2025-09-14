@@ -1,22 +1,19 @@
-# backend/main.py
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 import os
 from dotenv import load_dotenv
 
-load_dotenv()  # loads .env if present
+# Load environment variables from .env
+load_dotenv()
 
-app = FastAPI(title="Monastery360 API")
+app = FastAPI(title=os.getenv("APP_NAME", "Monastery360 API"))
 
-# allow local dev origins
-origins = [
-    "http://localhost:3000",
-    "http://127.0.0.1:3000"
-]
+# Get CORS origins from .env (default to localhost:3000)
+cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=origins,
+    allow_origins=[origin.strip() for origin in cors_origins],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -28,4 +25,4 @@ def health():
 
 @app.get("/api/hello")
 def hello():
-    return {"message": "Hello from Monastery360 backend"}
+    return {"message": f"Hello from {os.getenv('APP_NAME', 'Monastery360 API')}"}
