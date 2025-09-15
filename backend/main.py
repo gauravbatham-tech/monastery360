@@ -1,28 +1,15 @@
 from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-import os
-from dotenv import load_dotenv
+from routes import monasteries, events, booking, search, ocr
+from utils.database import Base, engine
 
-# Load environment variables from .env
-load_dotenv()
+# Create tables
+Base.metadata.create_all(bind=engine)
 
-app = FastAPI(title=os.getenv("APP_NAME", "Monastery360 API"))
+app = FastAPI(title="Monastery360 API")
 
-# Get CORS origins from .env (default to localhost:3000)
-cors_origins = os.getenv("CORS_ORIGINS", "http://localhost:3000").split(",")
-
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=[origin.strip() for origin in cors_origins],
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-@app.get("/api/health")
-def health():
-    return {"status": "ok"}
-
-@app.get("/api/hello")
-def hello():
-    return {"message": f"Hello from {os.getenv('APP_NAME', 'Monastery360 API')}"}
+# Register routes
+app.include_router(monasteries.router, prefix="/api/monasteries", tags=["Monasteries"])
+app.include_router(events.router, prefix="/api/events", tags=["Events"])
+app.include_router(booking.router, prefix="/api/book", tags=["Bookings"])
+app.include_router(search.router, prefix="/api/search", tags=["Search"])
+app.include_router(ocr.router, prefix="/api/ocr", tags=["OCR"])
