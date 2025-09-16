@@ -1,37 +1,46 @@
 "use client"
-import { useState } from "react"
-import Map, { Marker, NavigationControl } from "react-map-gl"
+
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
+import "leaflet/dist/leaflet.css"
 import { useRouter } from "next/navigation"
 
-export default function MapComponent({ locations }: { locations: any[] }) {
+type Location = {
+  id: string | number
+  lng: number
+  lat: number
+  label: string
+}
+
+export default function MapComponent({ locations }: { locations: Location[] }) {
   const router = useRouter()
-  const [viewState, setViewState] = useState({
-    longitude: locations[0]?.lng || 78.9629,
-    latitude: locations[0]?.lat || 20.5937,
-    zoom: 5,
-  })
+
+  const center: [number, number] = [
+    locations[0]?.lat || 20.5937,
+    locations[0]?.lng || 78.9629,
+  ]
 
   return (
     <div className="h-[500px] rounded-lg overflow-hidden">
-      <Map
-        {...viewState}
-        onMove={evt => setViewState(evt.viewState)}
-        mapStyle="mapbox://styles/mapbox/streets-v11"
-        mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
+      <MapContainer
+        center={center}
+        zoom={5}
         style={{ width: "100%", height: "100%" }}
       >
-        <NavigationControl position="top-left" />
-        {locations.map(loc => (
-          <Marker key={loc.id} longitude={loc.lng} latitude={loc.lat}>
-            <button
-              onClick={() => router.push(`/tour/${loc.id}`)}
-              className="bg-white text-sm px-2 py-1 rounded shadow"
-            >
-              {loc.label}
-            </button>
+        <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
+
+        {locations.map((loc) => (
+          <Marker key={loc.id} position={[loc.lat, loc.lng]}>
+            <Popup>
+              <button
+                onClick={() => router.push(`/tour/${loc.id}`)}
+                className="bg-white text-sm px-2 py-1 rounded shadow"
+              >
+                {loc.label}
+              </button>
+            </Popup>
           </Marker>
         ))}
-      </Map>
+      </MapContainer>
     </div>
   )
 }
