@@ -1,8 +1,10 @@
 "use client"
 
+import { useEffect } from "react"
 import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet"
-import "leaflet/dist/leaflet.css"
 import { useRouter } from "next/navigation"
+import L from "leaflet"
+import "leaflet/dist/leaflet.css"
 
 type Location = {
   id: string | number
@@ -19,9 +21,22 @@ export default function MapComponent({ locations }: { locations: Location[] }) {
     locations[0]?.lng || 78.9629,
   ]
 
+  useEffect(() => {
+    // Fix missing marker icons in Next.js
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    delete L.Icon.Default.prototype._getIconUrl
+    L.Icon.Default.mergeOptions({
+      iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
+      iconUrl: require("leaflet/dist/images/marker-icon.png"),
+      shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
+    })
+  }, [])
+
   return (
     <div className="h-[500px] rounded-lg overflow-hidden">
       <MapContainer
+        key={`${center[0]}-${center[1]}`} // ✅ prevents "already initialized" error
         center={center}
         zoom={5}
         style={{ width: "100%", height: "100%" }}

@@ -1,4 +1,4 @@
-import MapComponent from "../../components/MapComponent"
+import MapComponent from "@/components/MapComponent"
 
 const LOCATIONS = [
   { id: "p1", label: "Temple A", lat: 21.1458, lng: 79.0882 },
@@ -7,10 +7,12 @@ const LOCATIONS = [
 
 export default function MapPage() {
   return (
-    <div>
+    <main className="p-6 space-y-4">
       <h2 className="text-xl font-semibold">Map</h2>
       <p className="text-gray-600">Click a marker to open the tour.</p>
-      <MapComponent locations={LOCATIONS} />
-    </div>
+      <div className="rounded-lg shadow">
+        <MapComponent locations={LOCATIONS} />
+      </div>
+    </main>
   )
 }
